@@ -1,36 +1,84 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BotVerse – CRUD de Proyectos y Flujos para Chatbots
+BotVerse es una plataforma que permite gestionar proyectos y flujos conversacionales para el diseño de chatbots.  
+Incluye un backend en FastAPI con MongoDB y un frontend en Vue.js, permitiendo realizar un CRUD completo (crear, ver, editar y eliminar) tanto de proyectos como de flujos.
 
-## Getting Started
 
-First, run the development server:
+## Características principales
+- Proyectos : Crear, listar, actualizar y eliminar.
+- Flujos : Crear, listar, actualizar (nombre) y eliminar flujos asociados a un proyecto.
+- Frontend : Interfaz en Vue.js para gestionar proyectos y flujos.
+- Backend : API REST con FastAPI y MongoDB.
+- Comunicación : Axios para conectar frontend y backend.
+- Pruebas : Endpoints listos para Postman.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Requisitos previos
+- [Python 3.11+](https://www.python.org/downloads/)
+- [Node.js (LTS)](https://nodejs.org/) y npm
+- [MongoDB](https://www.mongodb.com/try/download/community) (instancia local o remota)
+- [Git](https://git-scm.com/)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Instrucciones de instalación
 
-## Learn More
+1. Clonar el repositorio
+git clone https://github.com/TU-USUARIO/BOTVERSE.git
+cd BOTVERSE
 
-To learn more about Next.js, take a look at the following resources:
+2. CONFIGURAR BACKEND
+# ubicarse en la carpeta 
+cd backend
+# Crear entorno virtual
+python -m venv venv
+# Activar el entorno:
+# En Windows:
+venv\Scripts\activate
+# En Linux/Mac:
+source venv/bin/activate
+# Instalar dependencias
+pip install -r requirements.txt
+# Configurar MongoDB
+El servicio de MongoDB debe estar corriendo en mongodb://localhost:27017 o ajusta la cadena de conexión en app/config.py si es necesario.
+# Levantar el servidor 
+uvicorn app.main:app --reload
+# El backend estará disponible
+http://127.0.0.1:8000
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. CONFIGURAR FRONTEND
+# ubicarse en la carpeta 
+cd ../frontend
+# Instalar dependencias
+npm install
+# Ejecutar servidor 
+npm run serve
+# Frontend estara disponible
+http://localhost:8080
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+4. PROBAR API CON POSTMAN
 
-## Deploy on Vercel
+Importa estos endpoints en Postman y prueba:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+GET /projects/ → Lista proyectos.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+POST /projects/ → Crea un proyecto.
+
+GET /projects/{id}/full → Obtiene un proyecto con sus flujos.
+
+POST /flows/ → Crea un flujo en un proyecto.
+
+PUT /flows/{id} → Edita el nombre de un flujo.
+
+DELETE /flows/{id} → Elimina un flujo.
+
+5. ESTRUCTURA DLE PROYECTO
+
+BOTVERSE/
+├── backend/          # API FastAPI
+│   ├── app/
+│   │   ├── routers/  # Rutas (projects, flows)
+│   │   ├── config.py # Configuración DB
+│   │   └── utils.py  # Utilidades
+├── frontend/         # Aplicación Vue.js
+│   ├── src/
+│   │   ├── views/    # Vistas (ProjectDetail)
+│   │   └── api.js    # Configuración Axios
