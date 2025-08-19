@@ -25,6 +25,7 @@ import {
 import '@xyflow/react/dist/style.css';
 import useQuery from "@/hooks/use-query";
 import { FullProject } from "@/lib/api";
+import ActionMenu from "@/components/action-menu";
 
 const sidebarItems = [
   {
@@ -99,43 +100,32 @@ const sidebarItems = [
   },
 ];
 
-const initialNodes: Node[] = [
-  {
-    id: "start",
-    type: "input",
-    position: { x: 0, y: 0 },
-    data: { label: `Inicio` },
-    style: {
-      background: "linear-gradient(135deg, #00c6ff, #0072ff)",
-      color: "#FFFFFF"
-    },
-    sourcePosition: Position.Right,
-  },
-  {
-    id: "end",
-    type: "output",
-    position: { x: 200, y: 0 },
-    data: { label: `Fin` },
-    style: {
-      background: "linear-gradient(135deg, #ff5f6d, #ffc371)",
-      color: "#FFFFFF"
-    },
-    targetPosition: Position.Left
-  }
-];
-
 export default function BotEditor() {
   const { data, loading, error } = useQuery<FullProject[]>(
     "http://127.0.0.1:8000/projects/",
     "GET"
   );
 
+  const initialNodes: Node[] = [
+    {
+      id: "start",
+      type: "defaultNode",
+      position: { x: 0, y: 0 },
+      data: {
+        label: `Inicio`,
+        onAddClick: () => setActionMenuVisible(true)
+      },
+      sourcePosition: Position.Right,
+    }
+  ];
   const [activeSidebarItem, setActiveSidebarItem] = useState("workflows")
   const [nodes, setNodes] = useState<Node[]>(initialNodes);
+  const [actionMenuVisible, setActionMenuVisible] = useState(false);
   const [selectedWorkflow, setSelectedWorkflow] = useState<FullProject | null>(null);
   const activeItem = sidebarItems.find(item => item.id === activeSidebarItem);
   const selectedNode = nodes.find(node => node.selected);
   const [workflows, setWorkflows] = useState<FullProject[]>([]);
+
 
   const onAddWorkflow = () => {
     setWorkflows(prev => [
@@ -187,6 +177,7 @@ export default function BotEditor() {
           }
         </div>
         {/* Main Canvas Area */}
+        <ActionMenu hidden={!actionMenuVisible} />
         <Canvas nodes={nodes} onNodeChange={setNodes} workflow={selectedWorkflow} />
         <RightPanel selectedNode={selectedNode} />
       </div>

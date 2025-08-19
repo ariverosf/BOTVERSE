@@ -13,7 +13,7 @@ export default function Header({ onSaveWorkspace }: HeaderProps) {
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-r from-allox-teal to-[#1FBEBA] rounded-xl flex items-center justify-center shadow-md">
+            <div className="w-10 h-10 bg-[#1FBEBA] rounded-xl flex items-center justify-center shadow-md">
               <Bot className="w-6 h-6 text-white" />
             </div>
             <div>
