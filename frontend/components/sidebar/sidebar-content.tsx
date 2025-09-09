@@ -1,33 +1,10 @@
-import { ForwardRefExoticComponent, RefAttributes } from "react";
-import { Button } from "@/components/ui/button";
-import { LucideProps } from "lucide-react";
+import type { SidebarContentProps } from "./sidebar-types";
 
-type SidebarContentProps = {
-  title: string;
-  description: string;
-  buttonLabel?: string;
-  buttonHandler?: () => void;
-  buttonIcon?: ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>;
-  children: React.ReactNode;
-};
-
-export default function SidebarContent({ title, description, buttonLabel, buttonIcon, buttonHandler, children }: SidebarContentProps) {
-  const ButtonIcon = buttonIcon ?? (() => (<span></span>));
-  const buttonHidden = !buttonLabel && !buttonHandler;
-  
+export default function SidebarContent({ tab, children, title }: SidebarContentProps) {
   return (
-    <div className="flex-1 bg-gray-50">
-      <div className="p-4 space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-allox-dark-gray">{ title }</h3>
-          <Button hidden={buttonHidden} size="sm" className="cursor-pointer bg-allox-lime hover:bg-allox-lime text-allox-dark-gray" onClick={buttonHandler}>
-            <ButtonIcon />
-            { buttonLabel }
-          </Button>
-        </div>
-        <p className="text-sm text-gray-600">
-          { description }
-        </p>
+    <div className="bg-gray-100 h-full w-60 border-r px-2 py-4">
+      <h3 className="text-sm font-bold text-gray-500 mb-4">{ title }</h3>
+      <div className="text-sm">
         { children }
       </div>
     </div>

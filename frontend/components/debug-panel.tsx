@@ -1,8 +1,8 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
 import { Button } from "@/components/ui/button";
 import { HelpCircle, Trash2 } from "lucide-react";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { Flow } from "@/lib/api";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 
 type DebugPanelProps = {
   currentFlow: Flow | null
@@ -16,19 +16,19 @@ export default function DebugPanel({ currentFlow }: DebugPanelProps) {
           <TabsList className="h-9 bg-white shadow-sm">
             <TabsTrigger
               value="logs"
-              className="text-xs font-medium data-[state=active]:bg-allox-teal data-[state=active]:text-white"
+              className="text-xs font-medium data-[state=active]:bg-teal-500 data-[state=active]:text-white"
             >
               Registros
             </TabsTrigger>
             <TabsTrigger
               value="events"
-              className="text-xs font-medium data-[state=active]:bg-allox-teal data-[state=active]:text-white"
+              className="text-xs font-medium data-[state=active]:bg-teal-500 data-[state=active]:text-white"
             >
               Eventos
             </TabsTrigger>
             <TabsTrigger
               value="json"
-              className="text-xs font-medium data-[state=active]:bg-allox-teal data-[state=active]:text-white"
+              className="text-xs font-medium data-[state=active]:bg-teal-500 data-[state=active]:text-white"
             >
               JSON
             </TabsTrigger>
@@ -36,7 +36,7 @@ export default function DebugPanel({ currentFlow }: DebugPanelProps) {
           <Button
             variant="ghost"
             size="sm"
-            className="text-xs text-allox-teal hover:bg-allox-teal hover:text-white font-medium"
+            className="text-xs text-teal-500 hover:bg-teal-500 hover:text-white font-medium"
           >
             <Trash2 className="w-3 h-3 mr-1" />
             Limpiar
@@ -47,15 +47,15 @@ export default function DebugPanel({ currentFlow }: DebugPanelProps) {
           <ScrollArea className="h-32">
             <div className="space-y-1 text-xs font-mono">
               <div className="text-gray-500 flex items-center space-x-2">
-                <span className="text-allox-teal">[14:32:15]</span>
+                <span className="text-teal-500">[14:32:15]</span>
                 <span>Bot iniciado correctamente</span>
               </div>
-              <div className="text-allox-teal flex items-center space-x-2">
-                <span className="text-allox-teal">[14:32:16]</span>
+              <div className="text-teal-500 flex items-center space-x-2">
+                <span className="text-teal-500">[14:32:16]</span>
                 <span>Nodo 'Inicio' ejecutado</span>
               </div>
               <div className="text-gray-500 flex items-center space-x-2">
-                <span className="text-allox-teal">[14:32:17]</span>
+                <span className="text-teal-500">[14:32:17]</span>
                 <span>Esperando interacción del usuario</span>
               </div>
             </div>

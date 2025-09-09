@@ -1,7 +1,7 @@
 import { Separator } from "@radix-ui/react-separator";
 import { Bot, ChevronRight, Download, Eye, Home, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "@radix-ui/react-avatar";
+import { Avatar, AvatarFallback } from "./ui/avatar";
 
 type HeaderProps = {
   onSaveWorkspace: () => void;

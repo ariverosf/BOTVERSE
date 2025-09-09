@@ -1,11 +1,11 @@
-import { Label } from "@radix-ui/react-label";
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Edit3, Plus, Send, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Node } from "@xyflow/react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+import { Label } from "./ui/label";
 
 type RightPanelProps = {
   selectedNode?: Node | null;
@@ -39,13 +39,13 @@ export default function RightPanel({ selectedNode }: RightPanelProps) {
           <TabsList className="grid w-full grid-cols-2 bg-gray-100">
             <TabsTrigger
               value="properties"
-              className="data-[state=active]:bg-allox-teal data-[state=active]:text-white font-medium"
+              className="data-[state=active]:bg-teal-500 data-[state=active]:text-white font-medium"
             >
               Propiedades
             </TabsTrigger>
             <TabsTrigger
               value="emulator"
-              className="data-[state=active]:bg-allox-teal data-[state=active]:text-white font-medium"
+              className="data-[state=active]:bg-teal-500 data-[state=active]:text-white font-medium"
             >
               Emulador
             </TabsTrigger>
@@ -66,7 +66,7 @@ export default function RightPanel({ selectedNode }: RightPanelProps) {
 
           <div className="space-y-6">
             <div>
-              <Label htmlFor="node-name" className="text-sm font-semibold text-allox-dark-gray mb-2 block">
+              <Label htmlFor="node-name">
                 Nombre del Nodo
               </Label>
               <Input
@@ -79,7 +79,7 @@ export default function RightPanel({ selectedNode }: RightPanelProps) {
             </div>
 
             <div>
-              <Label htmlFor="message" className="text-sm font-semibold text-allox-dark-gray mb-2 block">
+              <Label htmlFor="message">
                 Mensaje
               </Label>
               <textarea
