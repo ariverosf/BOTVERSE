@@ -1,6 +1,10 @@
-def format_mongo_document(doc):
-    if not doc :
+# app/utils.py
+def format_mongo_document(doc: dict | None):
+    if not doc:
         return None
-    doc["id"] = str(doc["_id"])
-    del doc["_id"]
-    return doc
+    d = dict(doc)
+    _id = d.get("_id")
+    if _id is not None:
+        d["id"] = str(_id)
+        d.pop("_id", None)
+    return d
