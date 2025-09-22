@@ -24,20 +24,12 @@ export default function Header({ onSaveWorkspace }: HeaderProps) {
           <Separator orientation="vertical" className="h-8" />
           <div className="flex items-center text-sm text-gray-500">
             <Home className="w-4 h-4 mr-2" />
-            <span>Cliente Workspace</span>
+            <span>Workspace</span>
             <ChevronRight className="w-4 h-4 mx-2" />
             <span className="text-allox-dark-gray font-semibold">Mi Bot de Atención</span>
           </div>
         </div>
         <div className="flex items-center space-x-3">
-          <Button
-            variant="outline"
-            size="sm"
-            className="border-allox-teal text-allox-teal hover:bg-allox-teal hover:text-white bg-transparent font-medium"
-          >
-            <Eye className="w-4 h-4 mr-2" />
-            Vista Previa
-          </Button>
           <Button
             variant="outline"
             size="sm"
@@ -50,9 +42,6 @@ export default function Header({ onSaveWorkspace }: HeaderProps) {
             <Save className="w-4 h-4 mr-2" />
             Guardar
           </Button>
-          <Avatar className="w-9 h-9 border-2 border-allox-teal/20">
-            <AvatarFallback className="bg-allox-teal text-white font-semibold">UB</AvatarFallback>
-          </Avatar>
         </div>
       </div>
     </header>

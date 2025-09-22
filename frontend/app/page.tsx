@@ -15,6 +15,7 @@ import SidebarContent from "@/components/sidebar/sidebar-content";
 import { Button } from "@/components/ui/button";
 import { GitMerge, GitPullRequestIcon } from "lucide-react";
 import clsx from "clsx";
+import SettingsDialog from "@/components/settings-dialog";
 
 export default function BotEditor() {
   const { data, loading, error } = useQuery<FullProject[]>(
@@ -40,6 +41,7 @@ export default function BotEditor() {
   const [selectedWorkflow, setSelectedWorkflow] = useState<FullProject | null>(null);
   const selectedNode = nodes.find(node => node.selected);
   const [workflows, setWorkflows] = useState<FullProject[]>([]);
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
 
   const onAddWorkflow = () => {
@@ -69,7 +71,7 @@ export default function BotEditor() {
     <div className="h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col font-nunito">
       <Header onSaveWorkspace={() => {}} />
       <div className="flex-1 flex overflow-hidden">
-        <Sidebar onChange={setCurrentTab}>
+        <Sidebar onChange={setCurrentTab} onSettingsClick={() => setSettingsOpen(true)}>
           <SidebarContent tab="workflows" title="Workflows">
             <Button onClick={onAddWorkflow} className="justify-start w-min" size="sm"><GitPullRequestIcon />Crear Workflow</Button>
             <div className="flex flex-col gap-1 mt-2">
@@ -89,6 +91,9 @@ export default function BotEditor() {
 
       {/* Bottom Debug Panel */}
       <DebugPanel currentFlow={null} />
+
+      {/* Settings Dialog */}
+      <SettingsDialog open={settingsOpen} closeDialog={() => setSettingsOpen(false)} />
     </div>
   )
 }
