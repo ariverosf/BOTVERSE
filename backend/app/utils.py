@@ -1,4 +1,3 @@
-# app/utils.py
 def format_mongo_document(doc: dict | None):
     if not doc:
         return None

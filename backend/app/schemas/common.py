@@ -1,6 +1,6 @@
 from enum import Enum
 from datetime import datetime
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 class NodeType(str, Enum):
     message = "message"
@@ -16,5 +16,5 @@ class BaseDBModel(BaseModel):
     model_config = {
         "populate_by_name": True,
         "from_attributes": True,
-        "ser_json_inf_nan": True,
+        
     }
