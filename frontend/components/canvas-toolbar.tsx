@@ -4,9 +4,10 @@ import { Button } from "@/components/ui/button";
 
 type CanvasToolbarProps = {
   onAddNode: () => void;
+  onTestFlow?: () => void;
 }
 
-export default function CanvasToolbar({ onAddNode }: CanvasToolbarProps) {
+export default function CanvasToolbar({ onAddNode, onTestFlow }: CanvasToolbarProps) {
   return (
     <div className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between">
       <div className="flex items-center space-x-4">
@@ -28,6 +29,7 @@ export default function CanvasToolbar({ onAddNode }: CanvasToolbarProps) {
             variant="outline"
             size="sm"
             className="border-allox-teal text-allox-teal hover:bg-allox-teal hover:text-white bg-transparent font-medium"
+            onClick={onTestFlow}
           >
             <Play className="w-4 h-4 mr-2" />
             Probar Flujo

@@ -1,13 +1,16 @@
 import { Separator } from "@radix-ui/react-separator";
-import { Bot, ChevronRight, Download, Eye, Home, Save } from "lucide-react";
+import { Bot, ChevronRight, Download, Home, Save, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "./ui/avatar";
 
 type HeaderProps = {
   onSaveWorkspace: () => void;
+  isSaving?: boolean;
+  selectedWorkflowName?: string;
+  onExportWorkspace?: () => void;
+  isExporting?: boolean;
 }
 
-export default function Header({ onSaveWorkspace }: HeaderProps) {
+export default function Header({ onSaveWorkspace, isSaving, selectedWorkflowName, onExportWorkspace, isExporting }: HeaderProps) {
   return (
     <header className="bg-white border-b border-slate-200 px-6 py-4 shadow-sm">
       <div className="flex items-center justify-between">
@@ -26,21 +29,48 @@ export default function Header({ onSaveWorkspace }: HeaderProps) {
             <Home className="w-4 h-4 mr-2" />
             <span>Workspace</span>
             <ChevronRight className="w-4 h-4 mx-2" />
-            <span className="text-allox-dark-gray font-semibold">Mi Bot de Atención</span>
+            <span className="text-allox-dark-gray font-semibold">
+              {selectedWorkflowName || 'Mi Bot de Atención'}
+            </span>
           </div>
         </div>
         <div className="flex items-center space-x-3">
           <Button
             variant="outline"
             size="sm"
-            className="border-allox-dark-gray text-allox-dark-gray hover:bg-allox-dark-gray hover:text-white bg-transparent font-medium"
+            onClick={onExportWorkspace}
+            disabled={isExporting}
+            className="border-allox-dark-gray text-allox-dark-gray hover:bg-allox-dark-gray hover:text-white bg-transparent font-medium disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <Download className="w-4 h-4 mr-2" />
-            Exportar
+            {isExporting ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Exportando...
+              </>
+            ) : (
+              <>
+                <Download className="w-4 h-4 mr-2" />
+                Exportar
+              </>
+            )}
           </Button>
-          <Button onClick={onSaveWorkspace} size="sm" className="bg-allox-lime hover:bg-[#B5EC5D] text-allox-dark-gray font-semibold shadow-md">
-            <Save className="w-4 h-4 mr-2" />
-            Guardar
+          <Button 
+            onClick={onSaveWorkspace} 
+            size="sm" 
+            disabled={isSaving}
+            className="bg-allox-lime hover:bg-[#B5EC5D] text-allox-dark-gray font-semibold shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isSaving ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Guardando...
+              </>
+            ) : (
+              <>
+                <Save className="w-4 h-4 mr-2" />
+                Guardar
+              </>
+            )}
           </Button>
         </div>
       </div>

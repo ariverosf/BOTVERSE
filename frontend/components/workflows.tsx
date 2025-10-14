@@ -1,13 +1,12 @@
-import useQuery from "@/hooks/use-query";
 import WorkflowItem from "@/components/workflow-item";
-import { FullProject } from "@/lib/api";
+import { FullWorkflowProject } from "@/lib/types";
 
 type WorkflowsProps = {
   loading: boolean;
   hasError: boolean;
-  data: FullProject[] | null;
-  selected: FullProject | null;
-  onSelect: (workflow: FullProject) => void;
+  data: FullWorkflowProject[] | null;
+  selected: FullWorkflowProject | null;
+  onSelect: (workflow: FullWorkflowProject) => void;
 };
 
 export default function Workflows({ loading, hasError, data, selected, onSelect }: WorkflowsProps) {

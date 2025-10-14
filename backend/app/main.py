@@ -1,74 +1,98 @@
-from fastapi import FastAPI
-from app.config import db
-from app.schemas import Flow
-from bson import ObjectId
-from fastapi import Body
-from fastapi import HTTPException
+"""
+BotVerse API - Main Application Entry Point
+
+This module initializes the FastAPI application and configures middleware,
+routers, and global exception handlers.
+"""
+
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from app.routers import projects
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.middleware.cors import CORSMiddleware
+import logging
 
-app = FastAPI()
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
-app = FastAPI(title="BotVerse API")
-# Agregar CORS
+# Initialize FastAPI application
+app = FastAPI(
+    title="BotVerse API",
+    description="Workflow management system for creating and managing conversational flows",
+    version="1.0.0",
+    docs_url="/docs",
+    redoc_url="/redoc"
+)
+
+# Configure CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # In production, specify exact origins
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
- )
+)
 
+# Include routers
+from app.routers import flows, execution
 app.include_router(projects.router)
+app.include_router(flows.router)
+app.include_router(execution.router)
 
-@app.get("/")
-def root():
-    return {"message": "BotVerse API funcionando"}
-
-@app.post("/flows/")
-def create_flow(flow: Flow):
-    new_flow = flow.dict()
-    result = db.flows.insert_one(new_flow)
-    return {"id": str(result.inserted_id)}
-@app.get("/flows/")
-def get_flows():
-    flows = []
-    for flow in db.flows.find():
-        flow["_id"] = str(flow["_id"])  # Convertir ObjectId a string
-        flows.append(flow)
-    return flows
-from fastapi import HTTPException
-
-@app.get("/flows/{flow_id}")
-def get_flow(flow_id: str):
-    print(f"Recibí el ID: {flow_id}")  # Esto muestra en la terminal lo que llega
-    try:
-        obj_id = ObjectId(flow_id)
-    except Exception as e:
-        print(f"Error al convertir a ObjectId: {e}")  # Mensaje detallado en consola
-        raise HTTPException(status_code=400, detail="ID inválido")
-    
-    flow = db.flows.find_one({"_id": obj_id})
-    if not flow:
-        raise HTTPException(status_code=404, detail="Flujo no encontrado")
-    flow["_id"] = str(flow["_id"])
-    return flow
-
-
-@app.delete("/flows/{flow_id}")
-def delete_flow(flow_id: str):
-    result = db.flows.delete_one({"_id": ObjectId(flow_id)})
-    if result.deleted_count == 0:
-        raise HTTPException(status_code=404, detail="Flujo no encontrado")
-    return {"message": "Flujo eliminado"}
-
-@app.put("/flows/{flow_id}")
-def update_flow(flow_id: str, updated_data: dict = Body(...)):
-    result = db.flows.update_one(
-        {"_id": ObjectId(flow_id)},
-        {"$set": updated_data}
+# Global exception handler
+@app.exception_handler(Exception)
+async def global_exception_handler(request, exc):
+    """
+    Global exception handler for uncaught exceptions
+    """
+    logger.error(f"Unhandled exception: {exc}", exc_info=True)
+    return JSONResponse(
+        status_code=500,
+        content={
+            "detail": "Internal server error",
+            "type": "internal_error"
+        }
     )
-    if result.matched_count == 0:
-        raise HTTPException(status_code=404, detail="Flujo no encontrado")
-    return {"message": "Flujo actualizado"}
+
+# Health check endpoint
+@app.get("/", tags=["Health"])
+def root():
+    """
+    Health check endpoint to verify API is running
+    """
+    return {
+        "message": "BotVerse API funcionando",
+        "status": "healthy",
+        "version": "1.0.0"
+    }
+
+@app.get("/health", tags=["Health"])
+def health_check():
+    """
+    Detailed health check endpoint
+    """
+    return {
+        "status": "healthy",
+        "api": "BotVerse",
+        "version": "1.0.0"
+    }
+
+# Application startup event
+@app.on_event("startup")
+async def startup_event():
+    """
+    Runs on application startup
+    """
+    logger.info("🚀 BotVerse API starting up...")
+    logger.info("📝 API documentation available at /docs")
+
+# Application shutdown event
+@app.on_event("shutdown")
+async def shutdown_event():
+    """
+    Runs on application shutdown
+    """
+    logger.info("👋 BotVerse API shutting down...")
