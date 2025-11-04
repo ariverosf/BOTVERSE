@@ -1,4 +1,3 @@
-# app/routers/flows.py
 from datetime import datetime
 from typing import List
 
@@ -19,7 +18,7 @@ def create_flow(payload: FlowCreate):
     # Validar que el project_id sea un ObjectId válido y que el proyecto exista
     if not ObjectId.is_valid(payload.project_id):
         raise HTTPException(status_code=400, detail="project_id inválido")
-    project = db.projects.find_one({"id": ObjectId(payload.project_id)})
+    project = db.projects.find_one({"_id": ObjectId(payload.project_id)})
     if not project:
         raise HTTPException(status_code=404, detail="Proyecto no encontrado")
 
@@ -77,7 +76,7 @@ def update_flow(flow_id: str, updated_data: dict = Body(...)):
     updated_data["updated_at"] = datetime.utcnow()
 
     res = db.flows.find_one_and_update(
-        {"id": ObjectId(flow_id)},
+        {"_id": ObjectId(flow_id)},
         {"$set": updated_data},
         return_document=True,
     )

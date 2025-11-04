@@ -1,13 +1,50 @@
-import { Separator } from "@radix-ui/react-separator";
-import { Bot, ChevronRight, Download, Eye, Home, Save } from "lucide-react";
+"use client"
+import { Bot, ChevronRight, Download, Home, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "./ui/avatar";
+import { Separator } from "./ui/separator";
+import { useWorkflowStore } from "@/store/workflowStore";
+import { toast } from "sonner";
 
-type HeaderProps = {
-  onSaveWorkspace: () => void;
-}
+export default function Header() {
+  const { updateFlow, getSelectedProject, getSelectedFlow } = useWorkflowStore();
 
-export default function Header({ onSaveWorkspace }: HeaderProps) {
+  const onSave = async () => {
+    try {
+      await updateFlow();
+      toast.success("Flujo guardado exitosamente", { position: "bottom-center" });
+    } catch(err) {
+      console.error(err);
+      toast.error("Ocurrió un error guardando el flujo", { position: "bottom-center" });
+    }
+  };
+
+  const onExport = () => {
+    const project = getSelectedProject();
+    const flow = getSelectedFlow();
+
+    if (!project || !flow) {
+      return toast.error("Ocurrió un error exportando el flujo", { position: "bottom-center" });
+    }
+
+    const exportData = {
+      project,
+      flow
+    };
+
+    // Create and download JSON file
+    const dataStr = JSON.stringify(exportData, null, 2);
+    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    
+    const exportFileName = `workflow-${flow.name.replace(/[^a-zA-Z0-9]/g, '-')}-${new Date().toISOString().split('T')[0]}.json`;
+    
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportFileName);
+    linkElement.click();
+
+    toast.success("El flujo ha sido exportado exitosamente", { position: "bottom-center" });
+  }
+
   return (
     <header className="bg-white border-b border-slate-200 px-6 py-4 shadow-sm">
       <div className="flex items-center justify-between">
@@ -31,14 +68,15 @@ export default function Header({ onSaveWorkspace }: HeaderProps) {
         </div>
         <div className="flex items-center space-x-3">
           <Button
+            onClick={onExport}
             variant="outline"
             size="sm"
-            className="border-allox-dark-gray text-allox-dark-gray hover:bg-allox-dark-gray hover:text-white bg-transparent font-medium"
+            className="border-allox-dark-gray text-allox-dark-gray hover:bg-allox-dark-gray font-medium"
           >
             <Download className="w-4 h-4 mr-2" />
             Exportar
           </Button>
-          <Button onClick={onSaveWorkspace} size="sm" className="bg-allox-lime hover:bg-[#B5EC5D] text-allox-dark-gray font-semibold shadow-md">
+          <Button onClick={onSave} size="sm" className="border border-allox-dark-gray bg-allox-lime hover:bg-[#B5EC5D] text-allox-dark-gray">
             <Save className="w-4 h-4 mr-2" />
             Guardar
           </Button>

@@ -1,41 +1,52 @@
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion"
+import { AudioLinesIcon, EarIcon, FileIcon, GitBranchIcon, GitPullRequestArrowIcon, ImageIcon, MapPinIcon, Share2Icon, SparkleIcon, TableIcon, TextIcon, VideoIcon, ZapIcon } from "lucide-react";
 import { Button } from "./ui/button";
-import { AudioLinesIcon, EarIcon, FileIcon, GitBranchIcon, GitPullRequestArrowIcon, Grid2X2PlusIcon, ImageIcon, LocationEditIcon, MapPinIcon, Share2Icon, SparkleIcon, TableIcon, TextIcon, VideoIcon, ZapIcon } from "lucide-react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
+import { useWorkflowStore } from "@/store/workflowStore";
+import { useMemo } from "react";
 
-type ActionMenuProps = {
-  hidden?: boolean;
-};
+export default function ActionMenu() {
+  const { selectedNode, getSelectedNode, changeNode } = useWorkflowStore();
+  const node = getSelectedNode();
 
-export default function ActionMenu({ hidden }: ActionMenuProps) {
+  const onActionClick = (type: string, subtype: string, value: string) => {
+    if (node && selectedNode) {
+      changeNode(selectedNode, {
+        ...node,
+        data: {
+          ...node?.data ?? [],
+          actions: [
+            ...node?.data?.actions as object[] ?? [],
+            { type, subtype, value }
+          ]
+        }
+      })
+    }
+  }
+
   return (
-    <Accordion hidden={hidden} type="multiple" className="overflow-y-auto p-4 w-80 border-r">
+    <Accordion type="multiple" className="overflow-y-auto p-4 min-w-80 border-r h-full bg-white">
       <AccordionItem value="mensaje">
         <AccordionTrigger>Enviar mensaje</AccordionTrigger>
         <AccordionContent className="grid gap-2 grid-cols-2">
-          <Button variant="outline" className="justify-start" size="sm">
+          <Button onClick={() => onActionClick("message", "text", "")} variant="outline" className="justify-start" size="sm">
             <TextIcon /><span className="truncate">Texto</span>
           </Button>
-          <Button variant="outline" className="justify-start" size="sm">
+          <Button onClick={() => onActionClick("message", "video", "")} variant="outline" className="justify-start" size="sm">
             <VideoIcon /><span className="truncate">Video</span>
           </Button>
-          <Button variant="outline" className="justify-start" size="sm">
+          <Button onClick={() => onActionClick("message", "audio", "")} variant="outline" className="justify-start" size="sm">
             <AudioLinesIcon /><span className="truncate">Audio</span>
           </Button>
-          <Button variant="outline" className="justify-start" size="sm">
+          <Button onClick={() => onActionClick("message", "action", "")} variant="outline" className="justify-start" size="sm">
             <TextIcon /><span className="truncate">Acción</span>
           </Button>
-          <Button variant="outline" className="justify-start" size="sm">
+          <Button onClick={() => onActionClick("message", "file", "")} variant="outline" className="justify-start" size="sm">
             <FileIcon /><span className="truncate">Archivo</span>
           </Button>
-          <Button variant="outline" className="justify-start" size="sm">
+          <Button onClick={() => onActionClick("message", "location", "")} variant="outline" className="justify-start" size="sm">
             <MapPinIcon /><span className="truncate">Ubicación</span>
           </Button>
-          <Button variant="outline" className="justify-start" size="sm">
+          <Button onClick={() => onActionClick("message", "image", "")} variant="outline" className="justify-start" size="sm">
             <ImageIcon /><span className="truncate">Imagen</span>
           </Button>
         </AccordionContent>
@@ -114,16 +125,16 @@ export default function ActionMenu({ hidden }: ActionMenuProps) {
       <AccordionItem value="info">
         <AccordionTrigger>Captura de información</AccordionTrigger>
         <AccordionContent className="grid gap-2 grid-cols-2">
-          <Button variant="outline" className="justify-start" size="sm">
-            <EarIcon /><span className="truncate">Unica opción</span>
+          <Button onClick={() => onActionClick("capture-info", "single-choice", "")} variant="outline" className="justify-start" size="sm">
+            <EarIcon /><span className="truncate">Opción única</span>
           </Button>
-          <Button variant="outline" className="justify-start" size="sm">
+          <Button onClick={() => onActionClick("capture-info", "multiple-choice", "")} variant="outline" className="justify-start" size="sm">
             <EarIcon /><span className="truncate">Multiples opciones</span>
           </Button>
-          <Button variant="outline" className="justify-start" size="sm">
+          <Button onClick={() => onActionClick("capture-info", "boolean", "")} variant="outline" className="justify-start" size="sm">
             <EarIcon /><span className="truncate">Boolean</span>
           </Button>
-          <Button variant="outline" className="justify-start" size="sm">
+          <Button onClick={() => onActionClick("capture-info", "confirmation", "")} variant="outline" className="justify-start" size="sm">
             <EarIcon /><span className="truncate">Confirmación</span>
           </Button>
         </AccordionContent>

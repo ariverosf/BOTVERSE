@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from jose import jwt, JWTError
 from passlib.context import CryptContext
+from typing import Optional
 import os
 
 ALGO = os.getenv("JWT_ALGORITHM", "HS256")
@@ -13,12 +14,12 @@ def hash_password(pw: str) -> str:
 def verify_password(pw: str, hashed: str) -> bool:
     return pwd_context.verify(pw, hashed)
 
-def create_access_token(sub: str, expires_minutes: int = 60) -> str:
+def create_access_token(sub: str, extra_data: Optional[dict], expires_minutes: int = 60) -> str:
     exp = datetime.utcnow() + timedelta(minutes=expires_minutes)
-    to_encode = {"sub": sub, "exp": exp}
+    to_encode = {"sub": sub, "exp": exp, **extra_data}
     return jwt.encode(to_encode, SECRET, algorithm=ALGO)
 
-def decode_token(token: str) -> dict | None:
+def decode_token(token: str) -> Optional[dict]:
     try:
         return jwt.decode(token, SECRET, algorithms=[ALGO])
     except JWTError:

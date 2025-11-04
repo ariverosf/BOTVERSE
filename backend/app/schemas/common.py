@@ -1,5 +1,6 @@
 from enum import Enum
 from datetime import datetime
+from typing import Optional
 from pydantic import BaseModel
 
 class NodeType(str, Enum):
@@ -9,9 +10,9 @@ class NodeType(str, Enum):
     tool = "tool"
 
 class BaseDBModel(BaseModel):
-    id: str | None = None
-    created_at: datetime | None = None
-    updated_at: datetime | None = None
+    id: Optional[str] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
     model_config = {
         "populate_by_name": True,
