@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+venv/
+botpack_demo.zip
+botpack_demo_rasa.zip
+test_compile.zip
+payload.json
+*.zip

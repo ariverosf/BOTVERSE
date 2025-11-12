@@ -3,12 +3,18 @@ from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI
+from app.routers import compile as compile_router
+from app.routers import export as export_router
+
 
 # Routers
 from app.routers import projects, flows, auth
 
 # 1) Instancia de la app
 app = FastAPI(title="BotVerse API")
+app.include_router(compile_router.router)
+app.include_router(export_router.router)  
 
 # 2) (Opcional) CORS para el frontend local
 app.add_middleware(
