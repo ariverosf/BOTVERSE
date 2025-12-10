@@ -17,9 +17,9 @@ export default function WorkflowsPage() {
   
   return (
     <div className="flex w-full h-full relative">
-      <FlowList />
-      { actionMenuVisible && <ActionMenu /> }
       <ReactFlowProvider>
+        <FlowList />
+      { actionMenuVisible && <ActionMenu /> }
         <FlowCanvas />
       </ReactFlowProvider>
       { node && node.type === "ActionNode" && <RightPanel /> }

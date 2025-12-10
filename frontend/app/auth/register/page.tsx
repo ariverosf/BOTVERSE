@@ -47,7 +47,7 @@ export default function RegisterPage() {
       toast.success("Cuenta creada éxitosamente", { position: "bottom-center" });
       redirect("/auth/login");
     } else {
-      toast.error("Credenciales incorrectas", { position: "bottom-center" });
+      toast.error("Error creando la cuenta", { position: "bottom-center" });
     }
   };
 

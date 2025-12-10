@@ -2,7 +2,6 @@ import { AudioLinesIcon, EarIcon, FileIcon, GitBranchIcon, GitPullRequestArrowIc
 import { Button } from "./ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
 import { useWorkflowStore } from "@/store/workflowStore";
-import { useMemo } from "react";
 
 export default function ActionMenu() {
   const { selectedNode, getSelectedNode, changeNode } = useWorkflowStore();
@@ -19,7 +18,7 @@ export default function ActionMenu() {
             { type, subtype, value }
           ]
         }
-      })
+      });
     }
   }
 

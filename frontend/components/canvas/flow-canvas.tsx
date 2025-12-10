@@ -1,7 +1,7 @@
 "use client"
 
 import { useCallback } from 'react';
-import { ReactFlow, applyNodeChanges, applyEdgeChanges, addEdge, Background, Controls, Edge, ReactFlowProvider, FinalConnectionState, useReactFlow, Node } from '@xyflow/react';
+import { ReactFlow, applyNodeChanges, applyEdgeChanges, addEdge, Background, Controls, Edge, ReactFlowProvider, FinalConnectionState, useReactFlow, Node, useUpdateNodeInternals } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import StartNode from './start-node';
 import EndNode from './end-node';
@@ -48,7 +48,7 @@ export default function FlowCanvas() {
             x: clientX,
             y: clientY,
           }),
-          data: { label: `Nodo` },
+          data: { id, label: `Nodo` },
           origin: [0.5, 0.0],
         };
 
