@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "./ui/separator";
 import { useWorkflowStore } from "@/store/workflowStore";
 import { toast } from "sonner";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
 
 export default function Header() {
   const { updateFlow, getSelectedProject, getSelectedFlow } = useWorkflowStore();
@@ -18,12 +19,19 @@ export default function Header() {
     }
   };
 
-  const onExport = () => {
+  const downloadFile = (data: any, fileName: string) => {
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', data);
+    linkElement.setAttribute('download', fileName);
+    linkElement.click();
+  }
+
+  const onExportJSON = () => {
     const project = getSelectedProject();
     const flow = getSelectedFlow();
 
     if (!project || !flow) {
-      return toast.error("Ocurrió un error exportando el flujo", { position: "bottom-center" });
+      return toast.error("Debes tener seleccionado un Flujo.", { position: "bottom-center" });
     }
 
     const exportData = {
@@ -36,13 +44,14 @@ export default function Header() {
     const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
     
     const exportFileName = `workflow-${flow.name.replace(/[^a-zA-Z0-9]/g, '-')}-${new Date().toISOString().split('T')[0]}.json`;
-    
-    const linkElement = document.createElement('a');
-    linkElement.setAttribute('href', dataUri);
-    linkElement.setAttribute('download', exportFileName);
-    linkElement.click();
+    downloadFile(dataUri, exportFileName);
 
     toast.success("El flujo ha sido exportado exitosamente", { position: "bottom-center" });
+  }
+  
+  const onExportRASA = () => {
+    // TODO
+    toast.error("Esta funcionalidad no esta disponible por el momento...", { position: "bottom-center" });
   }
 
   return (
@@ -67,15 +76,21 @@ export default function Header() {
           </div>
         </div>
         <div className="flex items-center space-x-3">
-          <Button
-            onClick={onExport}
-            variant="outline"
-            size="sm"
-            className="border-allox-dark-gray text-allox-dark-gray hover:bg-allox-dark-gray font-medium"
-          >
-            <Download className="w-4 h-4 mr-2" />
-            Exportar
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline"><Download /> Exportar...</Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuGroup>
+                <DropdownMenuItem onClick={onExportRASA}>
+                  Exportar RASA
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={onExportJSON}>
+                  Exportar JSON
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <Button onClick={onSave} size="sm" className="border border-allox-dark-gray bg-allox-lime hover:bg-[#B5EC5D] text-allox-dark-gray">
             <Save className="w-4 h-4 mr-2" />
             Guardar
