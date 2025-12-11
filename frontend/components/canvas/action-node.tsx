@@ -29,8 +29,8 @@ export default function ActionNode({ data, id }: ActionNodeProps) {
       {
         data?.actions?.map((action, i) => (
           <div className="flex flex-col" key={`${action.type}-${action.subtype}-${i}-${action.value}`}>
-            { action.type === "message" && <Message id={`${id}-${action.type}-${action.subtype}-${i}`} type={action.subtype} /> }
-            { action.type === "capture-info" && <CaptureInfo id={`${id}-${action.type}-${action.subtype}-${i}`} type={action.subtype} choices={action.value?.choices ?? ["Bienvenido"]} /> }
+            { action.type === "message" && <Message type={action.subtype} /> }
+            { action.type === "capture-info" && <CaptureInfo id={`${id}-${action.type}-${action.subtype}-${i}`} type={action.subtype} choices={action.value?.choices ?? []} /> }
           </div>
         ))
       }

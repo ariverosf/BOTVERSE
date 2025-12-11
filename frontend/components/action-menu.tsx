@@ -124,17 +124,8 @@ export default function ActionMenu() {
       <AccordionItem value="info">
         <AccordionTrigger>Captura de información</AccordionTrigger>
         <AccordionContent className="grid gap-2 grid-cols-2">
-          <Button onClick={() => onActionClick("capture-info", "single-choice", "")} variant="outline" className="justify-start" size="sm">
-            <EarIcon /><span className="truncate">Opción única</span>
-          </Button>
-          <Button onClick={() => onActionClick("capture-info", "multiple-choice", "")} variant="outline" className="justify-start" size="sm">
-            <EarIcon /><span className="truncate">Multiples opciones</span>
-          </Button>
-          <Button onClick={() => onActionClick("capture-info", "boolean", "")} variant="outline" className="justify-start" size="sm">
-            <EarIcon /><span className="truncate">Boolean</span>
-          </Button>
-          <Button onClick={() => onActionClick("capture-info", "confirmation", "")} variant="outline" className="justify-start" size="sm">
-            <EarIcon /><span className="truncate">Confirmación</span>
+          <Button onClick={() => onActionClick("capture-info", "choice", "")} variant="outline" className="justify-start" size="sm">
+            <EarIcon /><span className="truncate">Opción</span>
           </Button>
         </AccordionContent>
       </AccordionItem>
