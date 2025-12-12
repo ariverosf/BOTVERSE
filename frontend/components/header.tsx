@@ -49,8 +49,14 @@ export default function Header() {
   }
   
   const onExportRASA = () => {
-    // TODO
-    toast.error("Esta funcionalidad no esta disponible por el momento...", { position: "bottom-center" });
+    const project = getSelectedProject();
+    const flow = getSelectedFlow();
+
+    if (!project || !flow) {
+      return toast.error("Debes tener seleccionado un Flujo.", { position: "bottom-center" });
+    }
+
+    window.open(process.env.NEXT_PUBLIC_API_URL + "/bots/flows/" + flow.id + "/export", "_blank");
   }
   
   const onSimulateFlow = async () => {
