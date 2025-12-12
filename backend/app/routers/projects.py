@@ -7,7 +7,6 @@ from bson import ObjectId
 from app.config import db
 from app.deps import pagination_params
 from app.schemas.project import ProjectCreate, ProjectDB
-from app.schemas.flow import FlowDB
 from app.utils import format_mongo_document
 from app.routers.auth import get_current_user
 

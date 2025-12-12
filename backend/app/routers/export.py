@@ -2,10 +2,15 @@ from fastapi import APIRouter, HTTPException, Response
 from app.schemas.compile import CompileRequest
 from app.services.ir.validator import validate_diagram, IRValidationError
 from app.services.ir.builder import build_ir
-from app.services.codegen.rasa import generate_rasa_project
 from app.services.botpack import build_botpack
+from app.config import db
 from app.services.zipper import make_zip
+from bson import ObjectId
+from app.utils import format_mongo_document
+from app.services.rasa import generate_rasa_project
 import hashlib
+from fastapi.responses import StreamingResponse
+from io import BytesIO
 
 router = APIRouter(prefix="/bots", tags=["export"])
 
@@ -47,3 +52,22 @@ def export_botpack(bot_id: str, req: CompileRequest):
         "X-Artifact-SHA256": artifact_sha,
     }
     return Response(content=zip_bytes, media_type="application/zip", headers=headers)
+
+@router.get("/flows/{flow_id}/export", response_class=StreamingResponse)
+def export_rasa(flow_id: str):
+    if not ObjectId.is_valid(flow_id):
+        raise HTTPException(status_code=400, detail="ID inválido")
+
+    doc = db.flows.find_one({"_id": ObjectId(flow_id)})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Flujo no encontrado")
+
+    payload = format_mongo_document(doc)
+    zip_file = generate_rasa_project(payload)
+    print(zip_file)
+
+    return StreamingResponse(
+        BytesIO(zip_file),
+        media_type="application/zip",
+        headers={"Content-Disposition": "attachment; filename=rasa_project.zip"}
+    )

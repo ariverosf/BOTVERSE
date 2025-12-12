@@ -1,13 +1,15 @@
 "use client"
-import { Bot, ChevronRight, Download, Home, Save } from "lucide-react";
+import { Bot, ChevronRight, Download, Home, Play, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "./ui/separator";
 import { useWorkflowStore } from "@/store/workflowStore";
 import { toast } from "sonner";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
+import { DialogFooter, DialogHeader, Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger  } from "./ui/dialog";
+import SimulationChat from "./simulation-chat";
 
 export default function Header() {
-  const { updateFlow, getSelectedProject, getSelectedFlow } = useWorkflowStore();
+  const { updateFlow, getSelectedProject, getSelectedFlow, simulateFlow, simulationChoices, clearSimulationChat, simulationMessages } = useWorkflowStore();
 
   const onSave = async () => {
     try {
@@ -34,15 +36,12 @@ export default function Header() {
       return toast.error("Debes tener seleccionado un Flujo.", { position: "bottom-center" });
     }
 
-    const exportData = {
-      project,
-      flow
-    };
+    const exportData = { project, flow };
 
     // Create and download JSON file
     const dataStr = JSON.stringify(exportData, null, 2);
     const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-    
+
     const exportFileName = `workflow-${flow.name.replace(/[^a-zA-Z0-9]/g, '-')}-${new Date().toISOString().split('T')[0]}.json`;
     downloadFile(dataUri, exportFileName);
 
@@ -52,6 +51,15 @@ export default function Header() {
   const onExportRASA = () => {
     // TODO
     toast.error("Esta funcionalidad no esta disponible por el momento...", { position: "bottom-center" });
+  }
+  
+  const onSimulateFlow = async () => {
+    const flujo = getSelectedFlow();
+    if (!flujo) {
+      return toast.error("Debes tener seleccionado un Flujo.", { position: "bottom-center" });
+    }
+    clearSimulationChat();
+    await simulateFlow(flujo.id!, { node_id: "start-node", value: "" })
   }
 
   return (
@@ -95,6 +103,29 @@ export default function Header() {
             <Save className="w-4 h-4 mr-2" />
             Guardar
           </Button>
+
+
+          <Dialog>
+            <form>
+              <DialogTrigger asChild>
+                <Button onClick={onSimulateFlow} size="sm" className="border border-allox-dark-gray bg-allox-lime hover:bg-[#B5EC5D] text-allox-dark-gray">
+                  <Play className="w-4 h-4 mr-2" />
+                  Simular flujo
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>Simulación de Flujo</DialogTitle>
+                </DialogHeader>
+                <SimulationChat choices={simulationChoices} messages={simulationMessages} />
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button variant="outline">Cerrar</Button>
+                  </DialogClose>
+                </DialogFooter>
+              </DialogContent>
+            </form>
+          </Dialog>
         </div>
       </div>
     </header>

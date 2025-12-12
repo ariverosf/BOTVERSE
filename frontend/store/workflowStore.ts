@@ -23,6 +23,15 @@ type TFlow = {
   updated_at?: string;
 };
 
+type TSimulationResponse = {
+  messages: string[];
+  choices: {
+    id: string;
+    value: string;
+  }[];
+  node_id: string;
+}
+
 type WorkflowState = {
   actionMenuVisible: boolean;
   selectedNode: string | null;
@@ -32,6 +41,12 @@ type WorkflowState = {
   flows: TFlow[];
   canvasNodes: Node[];
   canvasEdges: Edge[];
+  simulationMessages: {
+    position: "left" | "right";
+    text: string;
+  }[];
+  simulationChoices: string[];
+  simulationNodeId: string | null;
   setEdges: (fn: (edges: Edge[]) => Edge[]) => void;
   setNodes: (fn: (nodes: Node[]) => Node[]) => void;
   toggleActionMenu: () => void;
@@ -49,6 +64,8 @@ type WorkflowState = {
   getProjectList: () => Promise<void>;
   getFlowsByProjectId: (projectId: string) => Promise<void>;
   setFlow: (flowId: string) => Promise<TFlow>;
+  simulateFlow: (flowId: string, data: { node_id: string, value: string }) => Promise<TSimulationResponse>;
+  clearSimulationChat: () => void;
 };
 
 const useWorkflowStore = create<WorkflowState>((set, get) => ({
@@ -61,6 +78,9 @@ const useWorkflowStore = create<WorkflowState>((set, get) => ({
   flows: [],
   canvasNodes: [],
   canvasEdges: [],
+  simulationMessages: [],
+  simulationChoices: [],
+  simulationNodeId: null,
   setEdges: (fn: (edges: Edge[]) => Edge[]) => {
     set((state => ({ canvasEdges: fn(state.canvasEdges)})))
   },
@@ -209,6 +229,41 @@ const useWorkflowStore = create<WorkflowState>((set, get) => ({
       canvasEdges: data.metadata?.edges ?? []
     });
     return data;
+  },
+  simulateFlow: async (flowId: string, data: { node_id: string, value: string }) => {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/simulation/${flowId}`, {
+      method: 'POST',
+      headers: { "Content-type": "application/json"},
+      credentials: "include",
+      body: JSON.stringify(data)
+    });
+    const json: TSimulationResponse = await res.json();
+    if (!res.ok) throw json;
+
+    const simulationMessages = [...get().simulationMessages];
+    if (data.value) {
+      simulationMessages.push({
+        position: "right",
+        text: data.value
+      });
+    }
+
+    simulationMessages.push(...json.messages.map(m => ({
+      position: "left" as "left",
+      text: m
+    })))
+
+    set({
+      simulationMessages: simulationMessages,
+      simulationChoices: json.choices.map(c => c.value),
+      simulationNodeId: json.node_id
+    })
+
+
+    return json;
+  },
+  clearSimulationChat: () => {
+    set({simulationMessages: [], simulationChoices: [], simulationNodeId: null})
   }
 }));
 
