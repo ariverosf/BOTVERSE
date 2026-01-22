@@ -9,13 +9,13 @@ export const metadata: Metadata = {
 };
 
 export default async function HomeLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const { userInitials } = await useUser();
+  const { userInitials, user } = await useUser();
   
   return (
     <div className="h-screen grid grid-rows-[auto_1fr] overflow-hidden">
       <Header />
       <div className="flex">
-        <Sidebar userInitials={userInitials} />
+        <Sidebar fullName={user.fullName} userInitials={userInitials} />
         <div className="w-full">
           { children }
         </div>

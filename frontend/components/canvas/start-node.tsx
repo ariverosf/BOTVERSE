@@ -1,5 +1,5 @@
 import { Handle, Position } from '@xyflow/react';
-import { EqualIcon, MenuIcon } from 'lucide-react';
+import { EqualIcon } from 'lucide-react';
 
 export default function StartNode() {
   return (

@@ -12,7 +12,7 @@ const nodeTypes = { StartNode, EndNode, ActionNode };
 
 export default function FlowCanvas() {
   const { canvasEdges, canvasNodes, setEdges, setNodes, setSelectedNode, closeActionMenu } = useWorkflowStore();
-  const { screenToFlowPosition } = useReactFlow();
+  const { screenToFlowPosition, getEdges } = useReactFlow();
 
   const onNodesChange = useCallback(
     (changes: any) => setNodes((nodesSnapshot) => applyNodeChanges(changes, nodesSnapshot)),
@@ -27,8 +27,13 @@ export default function FlowCanvas() {
   );
   const onConnect = useCallback(
     (params: any) => {
-      console.log("onConnect", params);
-      setEdges((edgesSnapshot) => addEdge(params, edgesSnapshot))
+      setEdges((edgesSnapshot) => {
+        const alreadyConnected = edgesSnapshot.some(e => e.source === params.source);
+        if (alreadyConnected) {
+          return edgesSnapshot;
+        }
+        return addEdge(params, edgesSnapshot);
+      })
     },
     [],
   );
@@ -37,6 +42,10 @@ export default function FlowCanvas() {
     (event: MouseEvent | TouchEvent, connectionState: FinalConnectionState) => {
       // when a connection is dropped on the pane it's not valid
       if (!connectionState.isValid) {
+        console.log(connectionState)
+        if (getEdges().some(e => e.source === connectionState.fromNode!.id) || connectionState.fromHandle?.type === 'target') {
+          return;
+        }
         // we need to remove the wrapper bounds, in order to get the correct position
         const id = crypto.randomUUID();
         const { clientX, clientY } =
@@ -51,8 +60,6 @@ export default function FlowCanvas() {
           data: { id, label: `Nodo` },
           origin: [0.5, 0.0],
         };
-
-        console.log(connectionState);
  
         setNodes((nds) => [...nds, newNode]);
         setEdges((eds) =>

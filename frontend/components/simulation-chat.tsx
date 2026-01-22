@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import { Button } from "./ui/button";
 import { useWorkflowStore } from "@/store/workflowStore";
+import { useRef } from "react";
 
 type SimulationMessageProps = {
   position: "left" | "right";
@@ -31,19 +32,32 @@ type SimulationChatProps = {
 
 export default function SimulationChat({ messages, choices }: SimulationChatProps) {
   const { simulateFlow, getSelectedFlow, simulationNodeId } = useWorkflowStore();
+  const simulationRef = useRef<HTMLDivElement>(null);
+
+  const onSimulate = (choice: string) => {
+    simulateFlow(getSelectedFlow()!.id!, { node_id: simulationNodeId!, value: choice })
+    if (simulationRef.current) {
+      setTimeout(() => {
+        simulationRef.current!.scrollTo({ behavior: "smooth", top: simulationRef.current!.scrollHeight})
+      }, 100);
+    };
+  }
+
   return (
-    <div className="flex flex-col p-2 gap-2">
-      {
-        messages.map(m => (
-          <SimulationMessage position={m.position} message={m.text} />
-        ))
-      }
+    <div ref={simulationRef} className="flex flex-col p-2 gap-2 overflow-auto max-h-96">
+      <div className="flex flex-col gap-2">
+        {
+          messages.map((m, i) => (
+            <SimulationMessage key={"simulation-message-" + i} position={m.position} message={m.text} />
+          ))
+        }
+      </div>
       <div className="flex flex-wrap gap-2 mt-auto">
         {
           choices.length > 0 && <p className="w-full text-xs mt-2">Opciones a seleccionar:</p>
         }
         {
-          choices.map(c => <Button size="sm" onClick={() => simulateFlow(getSelectedFlow()!.id!, { node_id: simulationNodeId!, value: c })} variant="outline">{c}</Button>)
+          choices.map((c, i) => <Button key={`button-${i}-choice-${c}`} size="sm" onClick={() => onSimulate(c)} variant="outline">{c}</Button>)
         }
       </div>
     </div>

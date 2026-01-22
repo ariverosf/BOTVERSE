@@ -43,6 +43,11 @@ def login(response: Response, body: Login):
     )
     return userFormatted
 
+@router.get("/logout")
+def logout(response: Response):
+    response.delete_cookie("access_token")
+    return {"message": "Sesión cerrada"}
+
 # dependencia para extraer usuario desde el token
 def get_current_user(access_token: Optional[str] = Cookie(default=None)):
     if not access_token:
